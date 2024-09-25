@@ -1,6 +1,4 @@
-import GameCharacter.GameCharacter;
-import GameCharacter.Hero;
-import GameCharacter.Monster;
+import GameCharacter.*;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -9,7 +7,7 @@ import java.util.Scanner;
 public class Main {
     private static final Scanner inScanner = new Scanner(System.in);
 
-    private static boolean wonLatestFight;
+    private static boolean wonLastFight;
 
     public static void main(String[] args) {
         // Skapa den spelbara hjälten
@@ -18,30 +16,32 @@ public class Main {
         var hero = new Hero(heroName, 100, 10, 25);
 
         // Skapa datorstyrda monster
-        var monster1 = new Monster("Fatty", 100, 10);
-        var monster2 = new Monster("Slimmy", 20, 25);
+        var enemy1 = new Bowser();
+        var enemy2 = new DarthMaul();
+        var enemy3 = new Mercy("Mercy 1");
 
-        var enemies = new ArrayList<GameCharacter>();
-        enemies.add(monster1);
-        enemies.add(monster2);
+        var enemies = new ArrayList<ComputerCharacter>();
+        enemies.add(enemy1);
+        enemies.add(enemy2);
+        enemies.add(enemy3);
 
         // Starta fighten
         fight(hero, enemies);
 
         // Skriv ut fightens resultat
         System.out.println("\n\n --- Resultat ---\n");
-        if (wonLatestFight) {
+        if (wonLastFight) {
             System.out.println(hero.getName() + " dog!");
             System.out.println("Du förlorade!");
         } else {
-            System.out.println("Alla monster är döda");
+            System.out.println("Alla monster är döda!");
             System.out.println("Du vann!");
         }
     }
 
     // En fight mellan en spelbar karaktär och en datorstyrd karaktär
-    // Ändrar 'wonLatestFight' beroende av hur fighten gick
-    private static void fight(Hero player, ArrayList<GameCharacter> enemies) {
+    // Ändrar 'wonLastFight' beroende av hur fighten gick
+    private static void fight(Hero player, ArrayList<ComputerCharacter> enemies) {
         var turnNumber = 1;
 
         while (true) {
@@ -81,7 +81,7 @@ public class Main {
 
                     // Ta bort fienden om den dog
                     if (enemies.get(enemyIndex).getHealth() <= 0) {
-                        System.out.println("Du dödade " + enemies.get(enemyIndex).getName() + "!");
+                        System.out.println(player.getName() + " dödade " + enemies.get(enemyIndex).getName() + "!");
                         enemies.remove(enemyIndex);
                     }
 
@@ -96,10 +96,10 @@ public class Main {
 
             // Datorns tur
             for (var enemy : enemies) {
-                enemy.doDamageTo(player);
+                enemy.doTurn(player, enemies);
             }
 
-            // Kolla om spelaren är vid liv
+            // Kolla om spelaren är död
             if (player.getHealth() <= 0) {
                 break;
             }
@@ -119,7 +119,7 @@ public class Main {
             turnNumber++;
         }
 
-        wonLatestFight = player.getHealth() <= 0;
+        wonLastFight = player.getHealth() <= 0;
     }
 
     // Tar in en lista med möjliga val och returnerar den som användaren valde
