@@ -1,12 +1,17 @@
 package GameCharacter;
 
+// En hjälte
+// Har förmågan att hela sig
 public class Hero extends GameCharacter {
-    public Hero(String name, int hp, int dmg) {
-        super(name, hp, dmg);
+    private int healPower;
+
+    public Hero(String name, int health, int damage, int healPower) {
+        super(name, health, damage);
+        this.healPower = healPower;
     }
 
     public void heal() {
-        System.out.println(name + " helade för 20 hälsa!");
-        hp += 20;
+        System.out.println(name + " helade för " + healPower + " hälsa!");
+        health += healPower;
     }
 }
